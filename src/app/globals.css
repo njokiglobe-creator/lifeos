@@ -1,0 +1,88 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #0b0d12;
+  --surface: #14171f;
+  --surface-raised: #1b1f2a;
+  --border: #262b38;
+  --foreground: #f3f1eb;
+  --muted: #8b8fa3;
+
+  --accent-dawn: #ff8b5e;
+  --accent-gold: #ffc15e;
+  --accent-dusk: #6fe3d0;
+  --accent-success: #6fe3a0;
+  --accent-danger: #ff6f6f;
+
+  --dawn-gradient: linear-gradient(90deg, var(--accent-dawn), var(--accent-gold), var(--accent-dusk));
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+  --color-accent-dawn: var(--accent-dawn);
+  --color-accent-gold: var(--accent-gold);
+  --color-accent-dusk: var(--accent-dusk);
+  --color-accent-success: var(--accent-success);
+  --color-accent-danger: var(--accent-danger);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-fraunces);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+.font-display {
+  font-family: var(--font-display), Georgia, serif;
+}
+
+.text-gradient-dawn {
+  background: var(--dawn-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.bg-dawn-gradient {
+  background: var(--dawn-gradient);
+}
+
+.glow-dawn {
+  box-shadow: 0 0 80px 10px rgba(255, 139, 94, 0.12);
+}
+
+::selection {
+  background: var(--accent-dawn);
+  color: #0b0d12;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-in {
+  animation: fadeInUp 0.35s ease both;
+}
+
+a, button {
+  transition: transform 0.15s ease, opacity 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-in { animation: none; }
+  a, button, .card-hover { transition: none; }
+}
