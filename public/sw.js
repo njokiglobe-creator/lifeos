@@ -18,14 +18,23 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
-  if (event.request.method !== "GET") return;
+  const { request } = event;
+  if (request.method !== "GET") return;
+
+  // Don't intercept cross-origin requests (Firebase auth, Google APIs, etc.)
+  // — only handle requests to our own origin.
+  if (new URL(request.url).origin !== self.location.origin) return;
+
   event.respondWith(
-    fetch(event.request)
+    fetch(request)
       .then((response) => {
         const clone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone)).catch(() => {});
+        caches.open(CACHE_NAME).then((cache) => cache.put(request, clone)).catch(() => {});
         return response;
       })
-      .catch(() => caches.match(event.request))
+      .catch(async () => {
+        const cached = await caches.match(request);
+        return cached || new Response("Offline", { status: 503, statusText: "Offline" });
+      })
   );
 });
