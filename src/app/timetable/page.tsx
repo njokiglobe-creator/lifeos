@@ -55,10 +55,10 @@ export default function TimetablePage() {
       <div className="px-4 sm:px-6 py-10 max-w-5xl mx-auto">
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-semibold mb-1">
+            <h1 className="font-display italic text-3xl mb-1">
               {weekOffset === 0 ? "This Week" : weekOffset > 0 ? "Upcoming Week" : "Past Week"}
             </h1>
-            <p className="text-sm text-neutral-400">
+            <p className="text-sm text-muted">
               {weekDates[0].toLocaleDateString(undefined, { month: "short", day: "numeric" })} –{" "}
               {weekDates[6].toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
             </p>
@@ -66,21 +66,21 @@ export default function TimetablePage() {
           <div className="flex items-center gap-1">
             <button
               onClick={() => setWeekOffset((w) => w - 1)}
-              className="p-2 rounded-lg border border-neutral-800 text-neutral-400 hover:text-white hover:border-neutral-600 transition"
+              className="p-2 rounded-lg border border-border text-muted hover:text-foreground hover:border-neutral-600 transition"
             >
               <ChevronLeft size={16} />
             </button>
             {weekOffset !== 0 && (
               <button
                 onClick={() => setWeekOffset(0)}
-                className="px-3 py-2 rounded-lg border border-neutral-800 text-xs text-neutral-400 hover:text-white hover:border-neutral-600 transition"
+                className="px-3 py-2 rounded-lg border border-border text-xs text-muted hover:text-foreground hover:border-neutral-600 transition"
               >
                 Today
               </button>
             )}
             <button
               onClick={() => setWeekOffset((w) => w + 1)}
-              className="p-2 rounded-lg border border-neutral-800 text-neutral-400 hover:text-white hover:border-neutral-600 transition"
+              className="p-2 rounded-lg border border-border text-muted hover:text-foreground hover:border-neutral-600 transition"
             >
               <ChevronRight size={16} />
             </button>
@@ -88,13 +88,13 @@ export default function TimetablePage() {
         </div>
 
         {loading ? (
-          <p className="text-sm text-neutral-500">Loading...</p>
+          <p className="text-sm text-muted">Loading...</p>
         ) : (
           <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
             <table className="w-full border-separate border-spacing-0 min-w-[640px]">
               <thead>
                 <tr>
-                  <th className="sticky left-0 bg-black text-left text-xs text-neutral-500 font-normal pb-3 pr-3 w-40">
+                  <th className="sticky left-0 bg-background text-left text-xs text-muted font-normal pb-3 pr-3 w-40">
                     Schedule
                   </th>
                   {weekDates.map((d, i) => {
@@ -102,10 +102,10 @@ export default function TimetablePage() {
                     const isToday = dateStr === today;
                     return (
                       <th key={dateStr} className="pb-3 px-1 text-center">
-                        <div className={`text-xs font-medium ${isToday ? "text-white" : "text-neutral-500"}`}>
+                        <div className={`text-xs font-medium ${isToday ? "text-accent-dawn" : "text-muted"}`}>
                           {d.toLocaleDateString(undefined, { weekday: "short" })}
                         </div>
-                        <div className={`text-[11px] ${isToday ? "text-neutral-300" : "text-neutral-600"}`}>
+                        <div className={`text-[11px] font-mono ${isToday ? "text-foreground" : "text-muted"}`}>
                           {d.getDate()}
                         </div>
                       </th>
@@ -116,25 +116,27 @@ export default function TimetablePage() {
               <tbody>
                 {SCHEDULE.map((block) => (
                   <tr key={block.id}>
-                    <td className="sticky left-0 bg-black py-1.5 pr-3 border-t border-neutral-900">
-                      <p className="text-sm text-neutral-200 leading-tight">{block.label}</p>
-                      <p className="text-[11px] text-neutral-600">{block.time}</p>
+                    <td className="sticky left-0 bg-background py-1.5 pr-3 border-t border-border">
+                      <p className="text-sm text-foreground leading-tight">{block.label}</p>
+                      <p className="text-[11px] font-mono text-muted">{block.time}</p>
                     </td>
                     {weekDateStrings.map((dateStr) => {
                       const state = getCellState(dateStr, block.time, block.id);
                       return (
-                        <td key={dateStr} className="py-1.5 px-1 text-center border-t border-neutral-900">
+                        <td key={dateStr} className="py-1.5 px-1 text-center border-t border-border">
                           <button
                             onClick={() => toggleCell(dateStr, block.id)}
                             className={`w-8 h-8 mx-auto rounded-lg border flex items-center justify-center transition ${
-                              state === "done"
-                                ? "bg-emerald-500 border-emerald-500"
-                                : state === "missed"
-                                ? "border-red-500/50 bg-red-500/10"
-                                : "border-neutral-800 bg-neutral-950 hover:border-neutral-600"
+                              state === "done" ? "pop-in bg-dawn-gradient border-transparent" : ""
+                            } ${
+                              state === "missed"
+                                ? "border-accent-danger/40 bg-accent-danger/10"
+                                : state === "upcoming"
+                                ? "border-border bg-surface hover:border-neutral-600"
+                                : ""
                             }`}
                           >
-                            {state === "done" && <Check size={14} className="text-black" />}
+                            {state === "done" && <Check size={14} className="text-[#0b0d12]" />}
                           </button>
                         </td>
                       );

@@ -100,7 +100,7 @@ export default function HockeyPage() {
         ) : events.length === 0 ? (
           <p className="text-sm text-neutral-500">Nothing scheduled yet — add one above.</p>
         ) : (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 stagger">
             {upcoming.map((event) => (
               <div key={event.id} className="group flex items-start gap-3 p-4 rounded-xl border border-neutral-800 bg-neutral-950">
                 <div className="flex-1 min-w-0">

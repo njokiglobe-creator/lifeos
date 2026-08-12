@@ -60,7 +60,7 @@ export default function SideHustlePage() {
         ) : projects.length === 0 ? (
           <p className="text-sm text-neutral-500">No projects yet — add one above.</p>
         ) : (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 stagger">
             {projects.map((project) => (
               <div key={project.id} className="group p-4 rounded-xl border border-neutral-800 bg-neutral-950">
                 <div className="flex items-start justify-between mb-2">

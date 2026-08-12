@@ -112,7 +112,7 @@ export default function PlannerPage() {
             Nothing planned yet — add your first task above.
           </p>
         ) : (
-          <ul className="flex flex-col gap-2">
+          <ul className="flex flex-col gap-2 stagger">
             {tasks.map((task) => (
               <li
                 key={task.id}

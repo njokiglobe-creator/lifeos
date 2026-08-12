@@ -215,7 +215,7 @@ export default function EventsPage() {
                 No events yet — add your first one above.
               </p>
             ) : (
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2 stagger">
                 {upcoming.map((event) => (
                   <div
                     key={event.id}

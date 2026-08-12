@@ -67,7 +67,7 @@ export default function ReadingPage() {
         ) : books.length === 0 ? (
           <p className="text-sm text-neutral-500">No books yet — add one above.</p>
         ) : (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 stagger">
             {reading.map((book) => {
               const pct = Math.min(100, Math.round((book.currentPage / book.totalPages) * 100));
               return (

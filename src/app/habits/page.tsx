@@ -111,13 +111,13 @@ export default function HabitsPage() {
             No habits yet — add your first one above.
           </p>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 stagger">
             {habits.map((habit) => {
               const done = isCompleted(habit.id);
               return (
                 <div
                   key={habit.id}
-                  className={`relative group p-4 rounded-xl border transition cursor-pointer ${
+                  className={`relative group p-4 rounded-xl border transition cursor-pointer card-hover ${
                     done
                       ? "border-emerald-500/50 bg-emerald-500/10"
                       : "border-neutral-800 bg-neutral-950 hover:border-neutral-600"
