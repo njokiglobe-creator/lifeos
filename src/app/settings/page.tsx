@@ -1,10 +1,11 @@
 "use client";
 
-import { LogOut, Check } from "lucide-react";
+import { LogOut, Check, Bell } from "lucide-react";
 import { signOut } from "firebase/auth";
 import { auth } from "@/src/lib/firebase";
 import { useAuth } from "@/src/hooks/useAuth";
 import { useSettings } from "@/src/hooks/useSettings";
+import { usePushSubscription } from "@/src/hooks/usePushSubscription";
 import { THEMES } from "@/src/lib/themes";
 import ProtectedShell from "@/src/components/ui/ProtectedShell";
 import InstallButton from "@/src/components/ui/InstallButton";
@@ -12,6 +13,7 @@ import InstallButton from "@/src/components/ui/InstallButton";
 export default function SettingsPage() {
   const { user } = useAuth();
   const { prefs, setThemeId } = useSettings();
+  const { permission, subscribed, subscribe } = usePushSubscription();
 
   return (
     <ProtectedShell>
@@ -39,6 +41,32 @@ export default function SettingsPage() {
               <LogOut size={16} />
               Sign out
             </button>
+          </div>
+        </section>
+
+        <section className="mb-8">
+          <p className="text-xs text-muted uppercase tracking-wide mb-3">Notifications</p>
+          <div className="p-4 rounded-xl border border-border bg-surface">
+            <div className="flex items-center gap-3 mb-3">
+              <Bell size={18} className="text-accent-dawn" />
+              <p className="text-sm text-muted flex-1">
+                Get notified for each scheduled block — even when the app is closed.
+              </p>
+            </div>
+            {subscribed ? (
+              <p className="text-sm text-accent-success">✓ Notifications enabled</p>
+            ) : permission === "denied" ? (
+              <p className="text-sm text-accent-danger">
+                Notifications are blocked in your browser settings. Enable them for this site to receive reminders.
+              </p>
+            ) : (
+              <button
+                onClick={subscribe}
+                className="bg-dawn-gradient text-[#0b0d12] text-sm font-medium px-4 py-2 rounded-lg hover:opacity-90 transition"
+              >
+                Enable Notifications
+              </button>
+            )}
           </div>
         </section>
 

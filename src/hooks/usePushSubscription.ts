@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 import { db } from "@/src/lib/firebase";
 import { useAuth } from "@/src/hooks/useAuth";
 
@@ -25,6 +25,14 @@ export function usePushSubscription() {
     }
   }, []);
 
+  useEffect(() => {
+    if (!user) return;
+    const ref = doc(db, "users", user.uid, "settings", "pushSubscription");
+    getDoc(ref).then((snap) => {
+      if (snap.exists()) setSubscribed(true);
+    });
+  }, [user]);
+
   const subscribe = useCallback(async () => {
     if (!user) return;
     if (typeof window === "undefined" || !("serviceWorker" in navigator)) return;
@@ -34,10 +42,14 @@ export function usePushSubscription() {
     if (result !== "granted") return;
 
     const registration = await navigator.serviceWorker.ready;
-    const subscription = await registration.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
-    });
+
+    let subscription = await registration.pushManager.getSubscription();
+    if (!subscription) {
+      subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+      });
+    }
 
     const ref = doc(db, "users", user.uid, "settings", "pushSubscription");
     await setDoc(ref, { subscription: subscription.toJSON(), updatedAt: Date.now() });
