@@ -1,5 +1,6 @@
 import type { Task } from "@/src/types/task";
 import type { Habit, HabitLog } from "@/src/types/habit";
+import type { TimetableStatus } from "@/src/types/timetable";
 
 export type ScoreBreakdown = {
   total: number;
@@ -28,12 +29,15 @@ export function calculateDisciplineScore({
   habits: Habit[];
   habitLogs: HabitLog[];
   journaled: boolean;
-  timetableCompletions: Record<string, boolean>;
+  timetableCompletions: Record<string, TimetableStatus>;
   timetableTotal: number;
 }): ScoreBreakdown {
-  const timetableCompleted = Object.values(timetableCompletions).filter(Boolean).length;
+  const statuses = Object.values(timetableCompletions);
+  const timetableCompleted = statuses.filter((s) => s === "done").length;
+  const timetableSkipped = statuses.filter((s) => s === "skipped").length;
+  const timetableExpected = Math.max(0, timetableTotal - timetableSkipped);
   const timetableScore =
-    timetableTotal === 0 ? 30 : Math.round((timetableCompleted / timetableTotal) * 30);
+    timetableExpected === 0 ? 30 : Math.round((timetableCompleted / timetableExpected) * 30);
 
   const tasksTotal = tasks.length;
   const tasksCompleted = tasks.filter((t) => t.completed).length;
@@ -54,7 +58,7 @@ export function calculateDisciplineScore({
     tasksScore,
     journalScore,
     timetableCompleted,
-    timetableTotal,
+    timetableTotal: timetableExpected,
     habitsCompleted,
     habitsTotal,
     tasksCompleted,

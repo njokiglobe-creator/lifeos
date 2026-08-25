@@ -12,7 +12,7 @@ import {
 } from "firebase/firestore";
 import { db } from "@/src/lib/firebase";
 import { useAuth } from "@/src/hooks/useAuth";
-import type { TimetableBlock, NewTimetableBlock } from "@/src/types/timetable";
+import type { TimetableBlock, NewTimetableBlock, TimetableStatus } from "@/src/types/timetable";
 
 function sortBlocks(blocks: TimetableBlock[]) {
   return [...blocks].sort((a, b) => a.time.localeCompare(b.time));
@@ -56,10 +56,12 @@ export function useTimetableBlocks() {
   return { blocks, loading, addBlock, deleteBlock };
 }
 
-// Single-day version (kept for potential reuse elsewhere)
+// Single-day version: powers the daily timetable view. Each block can be
+// marked "done" or "skipped" (e.g. "no training 3 days from now") — skipped
+// blocks are excluded from missed/discipline-score counts for that date.
 export function useTimetableLog(date: string) {
   const { user } = useAuth();
-  const [completions, setCompletions] = useState<Record<string, boolean>>({});
+  const [completions, setCompletions] = useState<Record<string, TimetableStatus>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -70,28 +72,43 @@ export function useTimetableLog(date: string) {
     }
     const ref = doc(db, "users", user.uid, "timetableLogs", date);
     const unsubscribe = onSnapshot(ref, (snap) => {
-      const data = snap.exists() ? (snap.data() as { completions: Record<string, boolean> }) : { completions: {} };
+      const data = snap.exists()
+        ? (snap.data() as { completions: Record<string, TimetableStatus> })
+        : { completions: {} };
       setCompletions(data.completions || {});
       setLoading(false);
     });
     return () => unsubscribe();
   }, [user, date]);
 
-  const toggleBlock = async (blockId: string) => {
+  const setBlockStatus = async (blockId: string, status: TimetableStatus | null) => {
     if (!user) return;
-    const updated = { ...completions, [blockId]: !completions[blockId] };
+    const updated = { ...completions };
+    if (status) {
+      updated[blockId] = status;
+    } else {
+      delete updated[blockId];
+    }
     const ref = doc(db, "users", user.uid, "timetableLogs", date);
     await setDoc(ref, { completions: updated }, { merge: true });
   };
 
-  return { completions, loading, toggleBlock };
+  const toggleDone = (blockId: string) => {
+    setBlockStatus(blockId, completions[blockId] === "done" ? null : "done");
+  };
+
+  const toggleSkipped = (blockId: string) => {
+    setBlockStatus(blockId, completions[blockId] === "skipped" ? null : "skipped");
+  };
+
+  return { completions, loading, toggleDone, toggleSkipped };
 }
 
-// Week version: loads completions for every date in [startDate, endDate]
-// (inclusive), keyed by date string, e.g. { "2026-08-10": { blockId: true } }
+// Week version: read-only, used by the Stats page to roll up completions for
+// every date in [startDate, endDate] (inclusive), e.g. { "2026-08-10": { blockId: "done" } }
 export function useTimetableWeek(startDate: string, endDate: string) {
   const { user } = useAuth();
-  const [weekData, setWeekData] = useState<Record<string, Record<string, boolean>>>({});
+  const [weekData, setWeekData] = useState<Record<string, Record<string, TimetableStatus>>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -104,9 +121,9 @@ export function useTimetableWeek(startDate: string, endDate: string) {
     const q = query(ref, where(documentId(), ">=", startDate), where(documentId(), "<=", endDate));
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const result: Record<string, Record<string, boolean>> = {};
+      const result: Record<string, Record<string, TimetableStatus>> = {};
       snapshot.docs.forEach((d) => {
-        const data = d.data() as { completions?: Record<string, boolean> };
+        const data = d.data() as { completions?: Record<string, TimetableStatus> };
         result[d.id] = data.completions || {};
       });
       setWeekData(result);
@@ -116,13 +133,5 @@ export function useTimetableWeek(startDate: string, endDate: string) {
     return () => unsubscribe();
   }, [user, startDate, endDate]);
 
-  const toggleCell = async (date: string, blockId: string) => {
-    if (!user) return;
-    const currentDayCompletions = weekData[date] || {};
-    const updated = { ...currentDayCompletions, [blockId]: !currentDayCompletions[blockId] };
-    const ref = doc(db, "users", user.uid, "timetableLogs", date);
-    await setDoc(ref, { completions: updated }, { merge: true });
-  };
-
-  return { weekData, loading, toggleCell };
+  return { weekData, loading };
 }

@@ -18,7 +18,7 @@ export default function ProtectedShell({ children }: { children: React.ReactNode
   if (loading || !user) {
     return (
       <main className="flex min-h-screen items-center justify-center">
-        <p className="text-neutral-400 text-sm">Loading...</p>
+        <p className="text-muted text-sm">Loading...</p>
       </main>
     );
   }

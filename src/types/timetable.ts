@@ -1,3 +1,5 @@
+export type TimetableStatus = "done" | "skipped";
+
 export type TimetableBlock = {
   id: string;
   time: string; // "HH:MM", 24-hour, zero-padded

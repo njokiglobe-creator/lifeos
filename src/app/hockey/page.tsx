@@ -65,68 +65,68 @@ export default function HockeyPage() {
       <div className="px-6 py-10 max-w-2xl mx-auto">
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-semibold mb-1">Hockey</h1>
-            <p className="text-sm text-neutral-400">
+            <h1 className="font-display italic text-3xl mb-1">Hockey</h1>
+            <p className="text-sm text-muted">
               {upcoming.length > 0 ? `${upcoming.length} upcoming` : "Nothing scheduled"}
             </p>
           </div>
-          <button onClick={() => setShowForm((s) => !s)} className="flex items-center gap-1.5 bg-white text-black text-sm font-medium px-4 py-2 rounded-lg hover:bg-neutral-200 transition">
+          <button onClick={() => setShowForm((s) => !s)} className="flex items-center gap-1.5 bg-dawn-gradient text-[#0b0d12] text-sm font-medium px-4 py-2 rounded-lg hover:opacity-90 transition">
             {showForm ? <X size={16} /> : <Plus size={16} />}
             {showForm ? "Cancel" : "Add"}
           </button>
         </div>
 
         {showForm && (
-          <form onSubmit={handleAdd} className="mb-8 flex flex-col gap-3 p-4 rounded-xl border border-neutral-800 bg-neutral-950">
-            <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title (e.g. vs Sailors Rivals)" className="w-full bg-transparent border-none outline-none text-sm placeholder:text-neutral-500" autoFocus />
+          <form onSubmit={handleAdd} className="mb-8 flex flex-col gap-3 p-4 rounded-xl border border-border bg-surface pop-in">
+            <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title (e.g. vs Sailors Rivals)" className="w-full bg-transparent border-none outline-none text-sm placeholder:text-muted" autoFocus />
             <div className="flex items-center gap-2 flex-wrap">
               {(Object.keys(TYPE_LABELS) as HockeyEventType[]).map((t) => (
-                <button key={t} type="button" onClick={() => setType(t)} className={`text-xs px-3 py-1.5 rounded-full border transition ${type === t ? TYPE_STYLES[t] : "border-neutral-800 text-neutral-500 hover:border-neutral-600"}`}>
+                <button key={t} type="button" onClick={() => setType(t)} className={`text-xs px-3 py-1.5 rounded-full border transition ${type === t ? TYPE_STYLES[t] : "border-border text-muted hover:border-muted"}`}>
                   {TYPE_LABELS[t]}
                 </button>
               ))}
             </div>
-            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="bg-neutral-900 border border-neutral-800 rounded-lg px-3 py-1.5 text-sm" />
+            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="bg-surface-raised border border-border rounded-lg px-3 py-1.5 text-sm text-foreground" />
             {type === "match" && (
-              <input type="text" value={opponent} onChange={(e) => setOpponent(e.target.value)} placeholder="Opponent" className="w-full bg-neutral-900 border border-neutral-800 rounded-lg px-3 py-1.5 text-sm placeholder:text-neutral-500" />
+              <input type="text" value={opponent} onChange={(e) => setOpponent(e.target.value)} placeholder="Opponent" className="w-full bg-surface-raised border border-border rounded-lg px-3 py-1.5 text-sm placeholder:text-muted" />
             )}
-            <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location (optional)" className="w-full bg-neutral-900 border border-neutral-800 rounded-lg px-3 py-1.5 text-sm placeholder:text-neutral-500" />
-            <button type="submit" disabled={submitting} className="self-end bg-white text-black text-sm font-medium px-4 py-1.5 rounded-lg hover:bg-neutral-200 transition disabled:opacity-40">Save</button>
+            <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location (optional)" className="w-full bg-surface-raised border border-border rounded-lg px-3 py-1.5 text-sm placeholder:text-muted" />
+            <button type="submit" disabled={submitting} className="self-end bg-dawn-gradient text-[#0b0d12] text-sm font-medium px-4 py-1.5 rounded-lg hover:opacity-90 transition disabled:opacity-40">Save</button>
           </form>
         )}
 
         {loading ? (
-          <p className="text-sm text-neutral-500">Loading...</p>
+          <p className="text-sm text-muted">Loading...</p>
         ) : events.length === 0 ? (
-          <p className="text-sm text-neutral-500">Nothing scheduled yet — add one above.</p>
+          <p className="text-sm text-muted">Nothing scheduled yet — add one above.</p>
         ) : (
           <div className="flex flex-col gap-2 stagger">
             {upcoming.map((event) => (
-              <div key={event.id} className="group flex items-start gap-3 p-4 rounded-xl border border-neutral-800 bg-neutral-950">
+              <div key={event.id} className="group flex items-start gap-3 p-4 rounded-xl border border-border bg-surface card-hover transition">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap mb-1">
                     <p className="text-sm font-medium">{event.title}</p>
                     <span className={`text-xs px-2 py-0.5 rounded-full border shrink-0 ${TYPE_STYLES[event.type]}`}>{TYPE_LABELS[event.type]}</span>
                   </div>
-                  <p className="text-xs text-neutral-500">
+                  <p className="text-xs text-muted">
                     {event.date}{event.opponent && ` · vs ${event.opponent}`}{event.location && ` · ${event.location}`}
                   </p>
                 </div>
-                <button onClick={() => deleteEvent(event.id)} className="text-neutral-600 hover:text-red-400 transition opacity-0 group-hover:opacity-100 shrink-0">
+                <button onClick={() => deleteEvent(event.id)} className="text-muted hover:text-accent-danger transition opacity-0 group-hover:opacity-100 shrink-0">
                   <Trash2 size={16} />
                 </button>
               </div>
             ))}
             {past.length > 0 && (
               <>
-                <p className="text-xs text-neutral-600 uppercase tracking-wide mt-4 mb-1">Past</p>
+                <p className="text-xs text-muted uppercase tracking-wide mt-4 mb-1">Past</p>
                 {past.map((event) => (
-                  <div key={event.id} className="group flex items-start gap-3 p-3 rounded-xl border border-neutral-900 bg-neutral-950/50 opacity-50">
+                  <div key={event.id} className="group flex items-start gap-3 p-3 rounded-xl border border-border bg-surface/50 opacity-50">
                     <div className="flex-1 min-w-0">
                       <p className="text-sm">{event.title}</p>
-                      <p className="text-xs text-neutral-500">{event.date}</p>
+                      <p className="text-xs text-muted">{event.date}</p>
                     </div>
-                    <button onClick={() => deleteEvent(event.id)} className="text-neutral-600 hover:text-red-400 transition opacity-0 group-hover:opacity-100">
+                    <button onClick={() => deleteEvent(event.id)} className="text-muted hover:text-accent-danger transition opacity-0 group-hover:opacity-100">
                       <Trash2 size={16} />
                     </button>
                   </div>

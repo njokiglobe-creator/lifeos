@@ -33,49 +33,49 @@ export default function SideHustlePage() {
       <div className="px-6 py-10 max-w-2xl mx-auto">
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-semibold mb-1">Side Hustle</h1>
-            <p className="text-sm text-neutral-400">
+            <h1 className="font-display italic text-3xl mb-1">Side Hustle</h1>
+            <p className="text-sm text-muted">
               {projects.length > 0 ? `${projects.length} active project${projects.length > 1 ? "s" : ""}` : "No projects yet"}
             </p>
           </div>
-          <button onClick={() => setShowForm((s) => !s)} className="flex items-center gap-1.5 bg-white text-black text-sm font-medium px-4 py-2 rounded-lg hover:bg-neutral-200 transition">
+          <button onClick={() => setShowForm((s) => !s)} className="flex items-center gap-1.5 bg-dawn-gradient text-[#0b0d12] text-sm font-medium px-4 py-2 rounded-lg hover:opacity-90 transition">
             {showForm ? <X size={16} /> : <Plus size={16} />}
             {showForm ? "Cancel" : "Add project"}
           </button>
         </div>
 
         {showForm && (
-          <form onSubmit={handleAdd} className="mb-8 flex flex-col gap-3 p-4 rounded-xl border border-neutral-800 bg-neutral-950">
-            <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Project name" className="w-full bg-transparent border-none outline-none text-sm placeholder:text-neutral-500" autoFocus />
-            <input type="text" value={goal} onChange={(e) => setGoal(e.target.value)} placeholder="Goal (optional)" className="w-full bg-neutral-900 border border-neutral-800 rounded-lg px-3 py-1.5 text-sm placeholder:text-neutral-500" />
+          <form onSubmit={handleAdd} className="mb-8 flex flex-col gap-3 p-4 rounded-xl border border-border bg-surface pop-in">
+            <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Project name" className="w-full bg-transparent border-none outline-none text-sm placeholder:text-muted" autoFocus />
+            <input type="text" value={goal} onChange={(e) => setGoal(e.target.value)} placeholder="Goal (optional)" className="w-full bg-surface-raised border border-border rounded-lg px-3 py-1.5 text-sm placeholder:text-muted" />
             <div className="flex items-center gap-2">
-              <input type="date" value={deadline} onChange={(e) => setDeadline(e.target.value)} className="bg-neutral-900 border border-neutral-800 rounded-lg px-3 py-1.5 text-sm" />
-              <button type="submit" disabled={submitting} className="ml-auto bg-white text-black text-sm font-medium px-4 py-1.5 rounded-lg hover:bg-neutral-200 transition disabled:opacity-40">Add</button>
+              <input type="date" value={deadline} onChange={(e) => setDeadline(e.target.value)} className="bg-surface-raised border border-border rounded-lg px-3 py-1.5 text-sm text-foreground" />
+              <button type="submit" disabled={submitting} className="ml-auto bg-dawn-gradient text-[#0b0d12] text-sm font-medium px-4 py-1.5 rounded-lg hover:opacity-90 transition disabled:opacity-40">Add</button>
             </div>
           </form>
         )}
 
         {loading ? (
-          <p className="text-sm text-neutral-500">Loading...</p>
+          <p className="text-sm text-muted">Loading...</p>
         ) : projects.length === 0 ? (
-          <p className="text-sm text-neutral-500">No projects yet — add one above.</p>
+          <p className="text-sm text-muted">No projects yet — add one above.</p>
         ) : (
           <div className="flex flex-col gap-3 stagger">
             {projects.map((project) => (
-              <div key={project.id} className="group p-4 rounded-xl border border-neutral-800 bg-neutral-950">
+              <div key={project.id} className="group p-4 rounded-xl border border-border bg-surface card-hover transition">
                 <div className="flex items-start justify-between mb-2">
                   <div>
                     <p className="text-sm font-medium">{project.name}</p>
-                    {project.goal && <p className="text-xs text-neutral-500">{project.goal}</p>}
+                    {project.goal && <p className="text-xs text-muted">{project.goal}</p>}
                   </div>
-                  <button onClick={() => deleteProject(project.id)} className="text-neutral-600 hover:text-red-400 transition opacity-0 group-hover:opacity-100">
+                  <button onClick={() => deleteProject(project.id)} className="text-muted hover:text-accent-danger transition opacity-0 group-hover:opacity-100">
                     <Trash2 size={16} />
                   </button>
                 </div>
-                <div className="w-full h-1.5 bg-neutral-800 rounded-full overflow-hidden mb-2">
-                  <div className="h-full bg-cyan-500 transition-all" style={{ width: `${project.progress}%` }} />
+                <div className="w-full h-1.5 bg-surface-raised rounded-full overflow-hidden mb-2">
+                  <div className="h-full bg-accent-dusk transition-all" style={{ width: `${project.progress}%` }} />
                 </div>
-                <div className="flex items-center justify-between text-xs text-neutral-500">
+                <div className="flex items-center justify-between text-xs text-muted">
                   <span>{project.progress}% complete{project.deadline && ` · Due ${project.deadline}`}</span>
                   <div className="flex items-center gap-2">
                     <span>Revenue: ${project.revenue}</span>

@@ -20,7 +20,7 @@ export default function MorePage() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="flex items-center gap-3 p-3 rounded-xl border border-border bg-surface hover:border-neutral-600 transition"
+                className="flex items-center gap-3 p-3 rounded-xl border border-border bg-surface hover:border-muted card-hover transition"
               >
                 <Icon size={18} className="text-muted" />
                 <span className="flex-1 text-sm">{item.label}</span>

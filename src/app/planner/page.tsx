@@ -17,7 +17,7 @@ function todayString() {
 const priorityStyles: Record<TaskPriority, string> = {
   high: "bg-red-500/15 text-red-400 border-red-500/30",
   medium: "bg-amber-500/15 text-amber-400 border-amber-500/30",
-  low: "bg-neutral-500/15 text-neutral-400 border-neutral-500/30",
+  low: "bg-surface-raised text-muted border-border",
 };
 
 export default function PlannerPage() {
@@ -54,8 +54,8 @@ export default function PlannerPage() {
     <ProtectedShell>
       <div className="px-6 py-10 max-w-2xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-2xl font-semibold mb-1">Daily Planner</h1>
-          <p className="text-sm text-neutral-400">
+          <h1 className="font-display italic text-3xl mb-1">Daily Planner</h1>
+          <p className="text-sm text-muted">
             {new Date().toLocaleDateString(undefined, {
               weekday: "long",
               month: "long",
@@ -68,26 +68,26 @@ export default function PlannerPage() {
         {/* Add task form */}
         <form
           onSubmit={handleAdd}
-          className="mb-8 flex flex-col gap-3 p-4 rounded-xl border border-neutral-800 bg-neutral-950"
+          className="mb-8 flex flex-col gap-3 p-4 rounded-xl border border-border bg-surface"
         >
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="What do you need to do?"
-            className="w-full bg-transparent border-none outline-none text-sm placeholder:text-neutral-500"
+            className="w-full bg-transparent border-none outline-none text-sm placeholder:text-muted"
           />
           <div className="flex items-center gap-2">
             <input
               type="time"
               value={time}
               onChange={(e) => setTime(e.target.value)}
-              className="bg-neutral-900 border border-neutral-800 rounded-lg px-3 py-1.5 text-sm text-neutral-300"
+              className="bg-surface-raised border border-border rounded-lg px-3 py-1.5 text-sm text-foreground"
             />
             <select
               value={priority}
               onChange={(e) => setPriority(e.target.value as TaskPriority)}
-              className="bg-neutral-900 border border-neutral-800 rounded-lg px-3 py-1.5 text-sm text-neutral-300"
+              className="bg-surface-raised border border-border rounded-lg px-3 py-1.5 text-sm text-foreground"
             >
               <option value="low">Low</option>
               <option value="medium">Medium</option>
@@ -96,7 +96,7 @@ export default function PlannerPage() {
             <button
               type="submit"
               disabled={submitting || !title.trim()}
-              className="ml-auto flex items-center gap-1.5 bg-white text-black text-sm font-medium px-4 py-1.5 rounded-lg hover:bg-neutral-200 transition disabled:opacity-40"
+              className="ml-auto flex items-center gap-1.5 bg-dawn-gradient text-[#0b0d12] text-sm font-medium px-4 py-1.5 rounded-lg hover:opacity-90 transition disabled:opacity-40"
             >
               <Plus size={16} />
               Add
@@ -106,9 +106,9 @@ export default function PlannerPage() {
 
         {/* Task list */}
         {loading ? (
-          <p className="text-sm text-neutral-500">Loading tasks...</p>
+          <p className="text-sm text-muted">Loading tasks...</p>
         ) : tasks.length === 0 ? (
-          <p className="text-sm text-neutral-500">
+          <p className="text-sm text-muted">
             Nothing planned yet — add your first task above.
           </p>
         ) : (
@@ -116,16 +116,16 @@ export default function PlannerPage() {
             {tasks.map((task) => (
               <li
                 key={task.id}
-                className={`flex items-center gap-3 p-3 rounded-xl border border-neutral-800 bg-neutral-950 ${
+                className={`flex items-center gap-3 p-3 rounded-xl border border-border bg-surface card-hover transition ${
                   task.completed ? "opacity-50" : ""
                 }`}
               >
                 <button
                   onClick={() => toggleTask(task.id, task.completed)}
-                  className="text-neutral-400 hover:text-white transition shrink-0"
+                  className="text-muted hover:text-foreground transition shrink-0"
                 >
                   {task.completed ? (
-                    <CheckCircle2 size={20} className="text-emerald-400" />
+                    <CheckCircle2 size={20} className="text-accent-success" />
                   ) : (
                     <Circle size={20} />
                   )}
@@ -134,13 +134,13 @@ export default function PlannerPage() {
                 <div className="flex-1 min-w-0">
                   <p
                     className={`text-sm ${
-                      task.completed ? "line-through text-neutral-500" : ""
+                      task.completed ? "line-through text-muted" : ""
                     }`}
                   >
                     {task.title}
                   </p>
                   {task.time && (
-                    <p className="text-xs text-neutral-500 mt-0.5">{task.time}</p>
+                    <p className="text-xs text-muted mt-0.5">{task.time}</p>
                   )}
                 </div>
 
@@ -152,7 +152,7 @@ export default function PlannerPage() {
 
                 <button
                   onClick={() => deleteTask(task.id)}
-                  className="text-neutral-600 hover:text-red-400 transition shrink-0"
+                  className="text-muted hover:text-accent-danger transition shrink-0"
                 >
                   <Trash2 size={16} />
                 </button>

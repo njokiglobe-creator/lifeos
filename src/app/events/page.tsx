@@ -25,7 +25,7 @@ const categoryStyles: Record<EventCategory, string> = {
   Health: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
   Finance: "bg-amber-500/15 text-amber-400 border-amber-500/30",
   Education: "bg-pink-500/15 text-pink-400 border-pink-500/30",
-  Custom: "bg-neutral-500/15 text-neutral-400 border-neutral-500/30",
+  Custom: "bg-surface-raised text-muted border-border",
 };
 
 function todayString() {
@@ -109,8 +109,8 @@ export default function EventsPage() {
       <div className="px-6 py-10 max-w-2xl mx-auto">
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-semibold mb-1">Events</h1>
-            <p className="text-sm text-neutral-400">
+            <h1 className="font-display italic text-3xl mb-1">Events</h1>
+            <p className="text-sm text-muted">
               {upcoming.length > 0
                 ? `${upcoming.length} upcoming`
                 : "Nothing scheduled yet"}
@@ -118,7 +118,7 @@ export default function EventsPage() {
           </div>
           <button
             onClick={() => setShowForm((s) => !s)}
-            className="flex items-center gap-1.5 bg-white text-black text-sm font-medium px-4 py-2 rounded-lg hover:bg-neutral-200 transition"
+            className="flex items-center gap-1.5 bg-dawn-gradient text-[#0b0d12] text-sm font-medium px-4 py-2 rounded-lg hover:opacity-90 transition"
           >
             {showForm ? <X size={16} /> : <Plus size={16} />}
             {showForm ? "Cancel" : "Add event"}
@@ -128,14 +128,14 @@ export default function EventsPage() {
         {showForm && (
           <form
             onSubmit={handleAdd}
-            className="mb-8 flex flex-col gap-3 p-4 rounded-xl border border-neutral-800 bg-neutral-950"
+            className="mb-8 flex flex-col gap-3 p-4 rounded-xl border border-border bg-surface pop-in"
           >
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Event title (e.g. Friend's Wedding)"
-              className="w-full bg-transparent border-none outline-none text-sm placeholder:text-neutral-500"
+              className="w-full bg-transparent border-none outline-none text-sm placeholder:text-muted"
               autoFocus
             />
 
@@ -144,18 +144,18 @@ export default function EventsPage() {
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="bg-neutral-900 border border-neutral-800 rounded-lg px-3 py-1.5 text-sm text-neutral-300"
+                className="bg-surface-raised border border-border rounded-lg px-3 py-1.5 text-sm text-foreground"
               />
               <input
                 type="time"
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
-                className="bg-neutral-900 border border-neutral-800 rounded-lg px-3 py-1.5 text-sm text-neutral-300"
+                className="bg-surface-raised border border-border rounded-lg px-3 py-1.5 text-sm text-foreground"
               />
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value as EventPriority)}
-                className="bg-neutral-900 border border-neutral-800 rounded-lg px-3 py-1.5 text-sm text-neutral-300"
+                className="bg-surface-raised border border-border rounded-lg px-3 py-1.5 text-sm text-foreground"
               >
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
@@ -168,7 +168,7 @@ export default function EventsPage() {
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               placeholder="Location (optional)"
-              className="w-full bg-neutral-900 border border-neutral-800 rounded-lg px-3 py-1.5 text-sm placeholder:text-neutral-500"
+              className="w-full bg-surface-raised border border-border rounded-lg px-3 py-1.5 text-sm placeholder:text-muted"
             />
 
             <textarea
@@ -176,7 +176,7 @@ export default function EventsPage() {
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Notes (optional)"
               rows={2}
-              className="w-full bg-neutral-900 border border-neutral-800 rounded-lg px-3 py-1.5 text-sm placeholder:text-neutral-500 resize-none"
+              className="w-full bg-surface-raised border border-border rounded-lg px-3 py-1.5 text-sm placeholder:text-muted resize-none"
             />
 
             <div className="flex items-center gap-2 flex-wrap">
@@ -188,7 +188,7 @@ export default function EventsPage() {
                   className={`text-xs px-3 py-1.5 rounded-full border transition ${
                     category === cat
                       ? categoryStyles[cat]
-                      : "border-neutral-800 text-neutral-500 hover:border-neutral-600"
+                      : "border-border text-muted hover:border-muted"
                   }`}
                 >
                   {cat}
@@ -199,7 +199,7 @@ export default function EventsPage() {
             <button
               type="submit"
               disabled={submitting || !title.trim() || !date}
-              className="self-end flex items-center gap-1.5 bg-white text-black text-sm font-medium px-4 py-1.5 rounded-lg hover:bg-neutral-200 transition disabled:opacity-40"
+              className="self-end flex items-center gap-1.5 bg-dawn-gradient text-[#0b0d12] text-sm font-medium px-4 py-1.5 rounded-lg hover:opacity-90 transition disabled:opacity-40"
             >
               Save Event
             </button>
@@ -207,11 +207,11 @@ export default function EventsPage() {
         )}
 
         {loading ? (
-          <p className="text-sm text-neutral-500">Loading events...</p>
+          <p className="text-sm text-muted">Loading events...</p>
         ) : (
           <>
             {upcoming.length === 0 && past.length === 0 ? (
-              <p className="text-sm text-neutral-500">
+              <p className="text-sm text-muted">
                 No events yet — add your first one above.
               </p>
             ) : (
@@ -219,7 +219,7 @@ export default function EventsPage() {
                 {upcoming.map((event) => (
                   <div
                     key={event.id}
-                    className="group flex items-start gap-3 p-4 rounded-xl border border-neutral-800 bg-neutral-950"
+                    className="group flex items-start gap-3 p-4 rounded-xl border border-border bg-surface card-hover transition"
                   >
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-1">
@@ -230,25 +230,25 @@ export default function EventsPage() {
                           {event.category}
                         </span>
                       </div>
-                      <p className="text-xs text-neutral-500">
+                      <p className="text-xs text-muted">
                         {formatEventDate(event.date)}
                         {event.time && ` · ${event.time}`}
                         {" · "}
-                        <span className="text-neutral-400">{daysUntil(event.date)}</span>
+                        <span className="text-accent-dawn">{daysUntil(event.date)}</span>
                       </p>
                       {event.location && (
-                        <p className="text-xs text-neutral-500 mt-1 flex items-center gap-1">
+                        <p className="text-xs text-muted mt-1 flex items-center gap-1">
                           <MapPin size={12} />
                           {event.location}
                         </p>
                       )}
                       {event.notes && (
-                        <p className="text-xs text-neutral-500 mt-1">{event.notes}</p>
+                        <p className="text-xs text-muted mt-1">{event.notes}</p>
                       )}
                     </div>
                     <button
                       onClick={() => deleteEvent(event.id)}
-                      className="text-neutral-600 hover:text-red-400 transition opacity-0 group-hover:opacity-100 shrink-0"
+                      className="text-muted hover:text-accent-danger transition opacity-0 group-hover:opacity-100 shrink-0"
                     >
                       <Trash2 size={16} />
                     </button>
@@ -257,23 +257,23 @@ export default function EventsPage() {
 
                 {past.length > 0 && (
                   <>
-                    <p className="text-xs text-neutral-600 uppercase tracking-wide mt-6 mb-2">
+                    <p className="text-xs text-muted uppercase tracking-wide mt-6 mb-2">
                       Past
                     </p>
                     {past.map((event) => (
                       <div
                         key={event.id}
-                        className="group flex items-start gap-3 p-4 rounded-xl border border-neutral-900 bg-neutral-950/50 opacity-50"
+                        className="group flex items-start gap-3 p-4 rounded-xl border border-border bg-surface/50 opacity-50"
                       >
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium">{event.title}</p>
-                          <p className="text-xs text-neutral-500">
+                          <p className="text-xs text-muted">
                             {formatEventDate(event.date)}
                           </p>
                         </div>
                         <button
                           onClick={() => deleteEvent(event.id)}
-                          className="text-neutral-600 hover:text-red-400 transition opacity-0 group-hover:opacity-100 shrink-0"
+                          className="text-muted hover:text-accent-danger transition opacity-0 group-hover:opacity-100 shrink-0"
                         >
                           <Trash2 size={16} />
                         </button>

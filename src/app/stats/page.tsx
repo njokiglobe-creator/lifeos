@@ -53,11 +53,15 @@ export default function StatsPage() {
     timetableTotal: SCHEDULE.length,
   });
 
-  const totalPossible = SCHEDULE.length * 7;
+  const totalSkipped = weekDateStrings.reduce((sum, dateStr) => {
+    const dayCompletions = weekData[dateStr] || {};
+    return sum + Object.values(dayCompletions).filter((s) => s === "skipped").length;
+  }, 0);
   const totalDone = weekDateStrings.reduce((sum, dateStr) => {
     const dayCompletions = weekData[dateStr] || {};
-    return sum + Object.values(dayCompletions).filter(Boolean).length;
+    return sum + Object.values(dayCompletions).filter((s) => s === "done").length;
   }, 0);
+  const totalPossible = Math.max(0, SCHEDULE.length * 7 - totalSkipped);
   const weeklyPct = totalPossible === 0 ? 0 : Math.round((totalDone / totalPossible) * 100);
 
   return (

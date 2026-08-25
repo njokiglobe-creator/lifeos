@@ -49,8 +49,8 @@ export default function HabitsPage() {
       <div className="px-6 py-10 max-w-2xl mx-auto">
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-semibold mb-1">Habits</h1>
-            <p className="text-sm text-neutral-400">
+            <h1 className="font-display italic text-3xl mb-1">Habits</h1>
+            <p className="text-sm text-muted">
               {habits.length > 0
                 ? `${completedCount}/${habits.length} done today`
                 : "Build your daily routine"}
@@ -58,7 +58,7 @@ export default function HabitsPage() {
           </div>
           <button
             onClick={() => setShowAddForm((s) => !s)}
-            className="flex items-center gap-1.5 bg-white text-black text-sm font-medium px-4 py-2 rounded-lg hover:bg-neutral-200 transition"
+            className="flex items-center gap-1.5 bg-dawn-gradient text-[#0b0d12] text-sm font-medium px-4 py-2 rounded-lg hover:opacity-90 transition"
           >
             {showAddForm ? <X size={16} /> : <Plus size={16} />}
             {showAddForm ? "Cancel" : "Add habit"}
@@ -68,14 +68,14 @@ export default function HabitsPage() {
         {showAddForm && (
           <form
             onSubmit={handleAdd}
-            className="mb-8 flex flex-col gap-3 p-4 rounded-xl border border-neutral-800 bg-neutral-950"
+            className="mb-8 flex flex-col gap-3 p-4 rounded-xl border border-border bg-surface pop-in"
           >
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Habit name (e.g. Drink Water)"
-              className="w-full bg-transparent border-none outline-none text-sm placeholder:text-neutral-500"
+              className="w-full bg-transparent border-none outline-none text-sm placeholder:text-muted"
               autoFocus
             />
             <div className="flex items-center gap-2 flex-wrap">
@@ -86,8 +86,8 @@ export default function HabitsPage() {
                   onClick={() => setIcon(emoji)}
                   className={`text-lg w-9 h-9 flex items-center justify-center rounded-lg border transition ${
                     icon === emoji
-                      ? "border-white bg-neutral-800"
-                      : "border-neutral-800 hover:border-neutral-600"
+                      ? "border-accent-dawn bg-surface-raised"
+                      : "border-border hover:border-muted"
                   }`}
                 >
                   {emoji}
@@ -96,7 +96,7 @@ export default function HabitsPage() {
               <button
                 type="submit"
                 disabled={submitting || !name.trim()}
-                className="ml-auto flex items-center gap-1.5 bg-white text-black text-sm font-medium px-4 py-1.5 rounded-lg hover:bg-neutral-200 transition disabled:opacity-40"
+                className="ml-auto flex items-center gap-1.5 bg-dawn-gradient text-[#0b0d12] text-sm font-medium px-4 py-1.5 rounded-lg hover:opacity-90 transition disabled:opacity-40"
               >
                 Save
               </button>
@@ -105,9 +105,9 @@ export default function HabitsPage() {
         )}
 
         {habitsLoading ? (
-          <p className="text-sm text-neutral-500">Loading habits...</p>
+          <p className="text-sm text-muted">Loading habits...</p>
         ) : habits.length === 0 ? (
-          <p className="text-sm text-neutral-500">
+          <p className="text-sm text-muted">
             No habits yet — add your first one above.
           </p>
         ) : (
@@ -119,8 +119,8 @@ export default function HabitsPage() {
                   key={habit.id}
                   className={`relative group p-4 rounded-xl border transition cursor-pointer card-hover ${
                     done
-                      ? "border-emerald-500/50 bg-emerald-500/10"
-                      : "border-neutral-800 bg-neutral-950 hover:border-neutral-600"
+                      ? "border-accent-success/50 bg-accent-success/10"
+                      : "border-border bg-surface hover:border-muted"
                   }`}
                   onClick={() => toggleHabitLog(habit.id, today, done)}
                 >
@@ -129,19 +129,19 @@ export default function HabitsPage() {
                       e.stopPropagation();
                       deleteHabit(habit.id);
                     }}
-                    className="absolute top-2 right-2 text-neutral-600 hover:text-red-400 transition opacity-0 group-hover:opacity-100"
+                    className="absolute top-2 right-2 text-muted hover:text-accent-danger transition opacity-0 group-hover:opacity-100"
                   >
                     <Trash2 size={14} />
                   </button>
                   <div className="text-2xl mb-2">{habit.icon}</div>
                   <p
                     className={`text-sm font-medium ${
-                      done ? "text-emerald-400" : "text-neutral-200"
+                      done ? "text-accent-success" : "text-foreground"
                     }`}
                   >
                     {habit.name}
                   </p>
-                  <p className="text-xs text-neutral-500 mt-1">
+                  <p className="text-xs text-muted mt-1">
                     {done ? "Done today" : "Tap to complete"}
                   </p>
                 </div>
