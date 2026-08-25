@@ -4,14 +4,21 @@ import { initializeApp, getApps, cert } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 import { SCHEDULE } from "@/src/lib/schedule";
 
-if (!getApps().length) {
+// Lazy, guarded init: called from the request handler rather than at module
+// load, so a missing service-account credential can't crash the whole build
+// (Next.js evaluates route modules during `next build` to collect config).
+function ensureAdminApp() {
+  if (getApps().length) return true;
+  const { FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY } = process.env;
+  if (!FIREBASE_PROJECT_ID || !FIREBASE_CLIENT_EMAIL || !FIREBASE_PRIVATE_KEY) return false;
   initializeApp({
     credential: cert({
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+      projectId: FIREBASE_PROJECT_ID,
+      clientEmail: FIREBASE_CLIENT_EMAIL,
+      privateKey: FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
     }),
   });
+  return true;
 }
 
 webpush.setVapidDetails(
@@ -29,6 +36,13 @@ export async function GET(req: NextRequest) {
   const authHeader = req.headers.get("authorization");
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  if (!ensureAdminApp()) {
+    return NextResponse.json(
+      { error: "Firebase admin credentials not configured" },
+      { status: 500 }
+    );
   }
 
   const now = currentTimeString();
